@@ -1,14 +1,9 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import data from './df_games.json';
 
-const data = [
-    { genre: 'Action', count: 4000 },
-    { genre: 'Adventure', count: 3000 },
-    { genre: 'RPG', count: 2000 },
-    { genre: 'Simulation', count: 2780 },
-    { genre: 'Strategy', count: 1890 },
-    { genre: 'Casual', count: 2390 },
-]
+console.log("Chart data:", data);
+// Ensure the data is in the expected format
 
 const GenreChart = () => {
     return (

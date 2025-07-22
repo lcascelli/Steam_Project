@@ -3,8 +3,7 @@ import GenreChart from './components/GenreChart';
 
 function App() {
   return (
-    <div style={{padding: '20px'}}>
-      <h1> Steam Insights</h1>
+    <div  className= "Steam Insights" style={{padding: '20px'}}>
       <GenreChart />
     </div> 
   );

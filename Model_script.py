@@ -86,6 +86,9 @@ genres_encoded = mlb.fit_transform(df['genres_list'])
 genres_df = pd.DataFrame(genres_encoded, columns=mlb.classes_, index=df.index)
 df_encoded = pd.concat([df, genres_df], axis=1)
 
+df_games = df_encoded[df_encoded['type'] == 'game'].copy()
+df_games.to_json('steam-insights\src\components\df_games.json', index=False, orient='records', lines=True)
+
 #for debugging
 #print(df_encoded.columns)
 
