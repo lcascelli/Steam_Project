@@ -87,7 +87,7 @@ genres_df = pd.DataFrame(genres_encoded, columns=mlb.classes_, index=df.index)
 df_encoded = pd.concat([df, genres_df], axis=1)
 
 df_games = df_encoded[df_encoded['type'] == 'game'].copy()
-df_games.to_json('steam-insights\src\data\df_games.json', index=False, orient='records', lines=True)
+
 
 #for debugging
 #print(df_encoded.columns)
@@ -100,6 +100,8 @@ df_indie.loc[:, "same_dev_pub"] = (
     df_indie['developer'].str.strip() ==
     df_indie['publisher'].str.strip()
 ).astype(int)
+
+df_indie.to_json('steam-insights\src\data\df_indie.json', index=False, orient='records', lines=True)
 
 df_final = df_indie.drop(columns=['genres_list', 'price', 'initialprice', 'discount', 'owners','publisher', 'developer', 'type','name', 'appid', 'Indie'])
 

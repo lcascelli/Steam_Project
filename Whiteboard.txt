@@ -1,0 +1,64 @@
+Whiteboard
+
+BACKEND
+    DATA: 
+        SOURCES:
+            steamspy
+                Coulmns:'appid', 'name', 'developer', 'publisher', 'score_rank', 'positive',
+                        'negative', 'userscore', 'owners', 'average_forever', 'average_2weeks',
+                        'median_forever', 'median_2weeks', 'price', 'initialprice', 'discount',
+                        'ccu'
+            storefront: 
+                Columns:'appid', 'genres', 'type', 'release_date'
+                Datatypes: 'int', 'dict' {keys = id, description}, 'string', 'dict' {keys = 'coming_soon', 'date'}
+        USE:
+            description: Pull data from API, clean the storefront columns to pull genre information into useable format
+                        and release_date information into useable format. (Possibly rework code to use id for genre information
+                        after making a map for each genres id in english)
+
+                        Merge datasets on appid, making sure that duplicates are removed before mergring
+
+                        No need dropping anything, BUT we know userscore is filled with NAs.
+
+                        When training the Random Forest, make sure to drop NAs for pertinent columns (not across dataset, since
+                        userscore would drop majority of cases)
+
+                        Use data to train Random Forest
+
+                        Use for charts on website showing different aspects of indie games (also indie vs non indie)
+                            CHART (ideas): 
+                                Count of genres in indie games: COMPLETED sum genre columns to create aggregates as bargraph. 
+
+                                Average Positive vs Negative reviews by genre: bargraph with two bars per category, 
+                                    one positive one negative. Shows the relative review mix for each genre
+                                        NEEDS average of positive and negative groupped by genre
+
+
+                                Average max playercount: (might be skewed by in relation to count for each genre, such that 
+                                    those genres with large counts will make it hard to see average of smaller count genres) 
+                                    Bar graph
+                                        NEEDS average average_forever groupped by genre
+
+                                Popularity of Genre over time (interactively add genres): line chart with x-axis as release date,
+                                    y axis as count, and line colors as different genres. Allow user to add remove genres as they
+                                    see fit. 
+                                        NEEDS sum of genre columns, groupped by month/year of release_date
+
+                                Top Indie games: take 5-10 of the highest owned indie games and give them a highlight section
+                                    with number of ccu, max player count, etc
+                                        NEEDS select top 5 rows of relevant columns, ordered by owners descending
+        INGESTION: API pulls
+            LOOKING for two things: new games, updates to previous games, and average ccu overtime during peak hours
+                HOW: each pull will need to happen during peak hours for gaming aka. weekends, throughout the day 
+                     to get information for peak times across the world (ASSUMPTION weekends are busiest across globe for gaming)
+                PULL info: we also need to record when pulls happened for each game, i.e. time of day and date
+                           used for future charts (approximately when did x game hit top charts)
+
+FRONTEND 
+    multi-paged with charts on one tab and ML prediction on other?
+    or single paged with charts and ML predicitons together 
+    Want to highlight the ML predictor as that is the purpose of the page.
+                        
+
+                                
+                
