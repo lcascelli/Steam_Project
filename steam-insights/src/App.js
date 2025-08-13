@@ -1,5 +1,5 @@
 import React from 'react';
-import GenreChart from './components/GenreChart';
+import GenreChart from './components/GenreCountChart';
 
 function App() {
   return (

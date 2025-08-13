@@ -1,7 +1,7 @@
 from google.cloud import bigquery
 import pandas as pd
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = #enter key here
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\Liam\Documents\_Python\steam-BQ-key\steaminsights-466700-b053db8508f6.json"
 
 client = bigquery.Client(project='steaminsights-466700')
 
@@ -33,7 +33,7 @@ avg_by_genre_query = """
             `Gore` as 'gore',
             `Strategy` as 'strat',
             `Racing` as 'racing',
-            `Simulation` as 'sim',
+            `Simulation` as 'simulation',
             `Casual` as 'casual',
             `Early Access` as 'early',
             `Free To Play` as 'free',
@@ -45,4 +45,5 @@ avg_by_genre_query = """
   GROUP BY genre;
   """
 avg_by_genre_df = client.query(avg_by_genre_query).to_dataframe()
-avg_by_genre_df.to_json('steam-insights/src/data/avg_by_genre.json', index=False, orient='records', lines=True)
+os.makedirs("steam-insights/src/data", exist_ok=True)
+avg_by_genre_df.to_json("steam-insights/src/data/avg_by_genre.json", index=False, orient='records')

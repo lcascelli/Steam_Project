@@ -58,6 +58,8 @@ FRONTEND
     multi-paged with charts on one tab and ML prediction on other?
     or single paged with charts and ML predicitons together 
     Want to highlight the ML predictor as that is the purpose of the page.
+    But also want to include necessary information before someone uses this feature.
+    Moving forward with a single page for now
                         
 
                                 
