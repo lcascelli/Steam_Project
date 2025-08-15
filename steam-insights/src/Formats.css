@@ -1,0 +1,22 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding: 50px;
+}
+
+.chart-row {
+    display: flex;
+    gap: 0px;
+}
+ /*Keeps charts same size*/
+.chart {
+    flex: 1;
+}
+
+/*Formats based on screen size*/
+@media screen and (max-width: 768px) {
+    .chart-row {
+        flex-direction: column;
+    }
+}
