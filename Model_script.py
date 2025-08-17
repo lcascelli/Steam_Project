@@ -101,7 +101,8 @@ df_indie.loc[:, "same_dev_pub"] = (
     df_indie['publisher'].str.strip()
 ).astype(int)
 
-df_indie.to_json('steam-insights\src\data\df_indie.json', index=False, orient='records', lines=True)
+#used for first pull of data. Probably do not need it in model script. Moving to seaparte script or BQ fetch script.
+#df_indie.to_json('steam-insights\src\data\df_indie.json', index=False, orient='records', lines=True)
 
 df_final = df_indie.drop(columns=['genres_list', 'price', 'initialprice', 'discount', 'owners','publisher', 'developer', 'type','name', 'appid', 'Indie'])
 
