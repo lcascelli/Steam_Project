@@ -64,6 +64,7 @@ SELECT
   `positive`,
   `negative`,
   `owners`,
+  `owners_lower`,
   `publisher`,
   `developer`
 FROM `steaminsights-466700.steam_data.indie_games`
