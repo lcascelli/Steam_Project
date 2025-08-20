@@ -2,19 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import genreData from '../data/df_indie_simple.json';
 
+
 function TopGamesChart() {
     const [SelectedGenres, setSelectedGenres] = useState([]);
     const [filteredGames, setFilteredGames] = useState([]);
 
     const genres = Array.from(
-        new Set(genreData.flatMap(game => game.genre_list))
-    );
+        new Set(genreData.flatMap(game => game.genres_list || []))
+    ).sort();
 
+console.log(genreData.flatMap(game => game.genres_list));
+
+/* This still needs to be fixed. Right now it is a small scrollable box, but I want to be able to have a multi-select feature*/
     useEffect(() => {
         let filtered = genreData;
         if (SelectedGenres.length > 0) {
             filtered = genreData.filter(game =>
-                SelectedGenres.some(genre => game.genre_list.includes(genre))
+                SelectedGenres.every(genre => game.genres_list.includes(genre))
             );
         }
 
@@ -25,25 +29,34 @@ function TopGamesChart() {
         setFilteredGames(topGames);
     }, [SelectedGenres]);
 
+const handleGenreChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedGenres(prev =>
+        checked ? [...prev, value] : prev.filter(genre => genre !== value)
+    );
+};
+
     return (
         <div>
             <h2>Top 10 Games By Ownership</h2>
             {/*filter logic*/}
-            <select
-                multiple
-                value={SelectedGenres}
-                onChange={(e) =>
-                    setSelectedGenres(
-                        Array.from(e.target.selectedOptions, option => option.value)
-                    )
-                }
-            >
-                {genres.map((genre) => (
-                    <option key={genre} value={genre}>
+            <div style= {{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                {genres && genres.length > 0 ? (
+                genres.map((genre) => (
+                    <label key={genre} style={{marginRight: "10px"}}>
+                        <input
+                            type="checkbox"
+                            value={genre}
+                            checked={SelectedGenres.includes(genre)}
+                            onChange={handleGenreChange}
+                        />
                         {genre}
-                    </option>
-                ))}
-            </select>
+                    </label>
+                ))
+            ) : (
+                <p>Loading genres...</p>
+            )}
+            </div>
             {/*chart*/}
             <table border="1" cellPadding="5" style={{ marginTop: "10px", width: "100%" }}>
                 <thead>
