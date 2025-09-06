@@ -4,8 +4,12 @@ import genreData from '../data/avg_by_genre.json';
 import { genreLabels } from '../components/genreLabels';
 
 
-const sortedData = [...genreData]
-        .map(d => ({...d, genre_count: Number(d.genre_count) }))
+const sortedData = Object.entries(genreData)
+        .map(([genre, data]) => ({
+            ...data,
+            genre,
+            genre_count: Number(data.genre_count),
+        }))
         .sort((a, b) => a.genre_count - b.genre_count)
         .reverse()
         .map(d => ({

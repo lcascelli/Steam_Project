@@ -46,7 +46,7 @@ avg_by_genre_query = """
   """
 avg_by_genre_df = client.query(avg_by_genre_query).to_dataframe()
 os.makedirs("steam-insights/src/data", exist_ok=True)
-avg_by_genre_df.to_json("steam-insights/src/data/avg_by_genre.json", index=False, orient='records')
+avg_by_genre_df.set_index("genre").to_json("steam-insights/src/data/avg_by_genre.json", orient='index')
 print("Average by genre data fetched and saved.")
 
 #Creating a condensed version of the indie games DataFrame for TopGamesChart.js. Stored here for now, before automatic pulls.

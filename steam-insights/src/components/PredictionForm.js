@@ -7,17 +7,19 @@ function PredictionForm() {
     const [inputData, setInputData] = useState({});
     const [Result, setResult] = useState(null);
 
-    //extracting genre names
-    const genresLookup = avg_by_genre.reduce((acc, g) => {
-        acc[g.genre.toLowerCase()] = g;
-        return acc;
-    }, {});
-    const genres = Object.keys(genresLookup);
+        //extracting genre names
+    const genreLookup = avg_by_genre;
+    const genres = Object.keys(genreLookup);
 
 
     useEffect(() => {
         if (selectedGenre.length === 0) return;
         
+
+        //using some proxies for values that I have. 
+        //***FIXME: bigquery for avg_by_genre.json to get median_forever and ccu averages for each genre***
+
+
         let sums = { positive: 0, negative: 0, avg_forever: 0, median_forever: 0, ccu: 0};
         selectedGenre.forEach((genre) => {
             const g = avg_by_genre[genre];
@@ -48,14 +50,17 @@ function PredictionForm() {
 
     const handleGenreChange = (e) => {
         const { value, checked } = e.target;
+        const val = value.toLowerCase();
         setSelectedGenre(prev => 
-            checked ? [...prev, value] : prev.filter(g => g !== value)
+            checked ? [...prev, val] : prev.filter(g => g !== val)
         );
     };
 
     const handlePredict = async () => {
+        console.log("Sending inputData:", inputData);
         try {
             const prediction = await getPrediction(inputData);
+            console.log("Prediction Results:", prediction);
             setResult(prediction);
         } catch (error) {
             console.error("Error fetching prediction:", error);
@@ -75,7 +80,7 @@ function PredictionForm() {
                             checked={selectedGenre.includes(genre)}
                             onChange={handleGenreChange}
                         />
-                        {genre}
+                        {genre.charAt(0).toUpperCase() + genre.slice(1)}
                     </label>
                 ))}
             </div>

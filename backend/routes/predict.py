@@ -10,6 +10,8 @@ model_path = os.path.join(os.path.dirname(__file__), '..', 'model', 'rf_model.jo
 
 model = joblib.load(model_path)
 
+
+
 class PredictionInput(BaseModel):
     Action: int
     Casual: int

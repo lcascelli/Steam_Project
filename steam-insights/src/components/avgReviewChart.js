@@ -3,8 +3,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import genreData from '../data/avg_by_genre.json';
 import { genreLabels } from '../components/genreLabels';
 
-const sortedData = [...genreData]
-        .map(d => ({...d, avg_positive: Number(d.avg_positive) }))
+const sortedData = Object.entries(genreData)
+        .map(([genre, data]) => ({
+            ...data,
+            genre,
+            avg_positive: Number(data.avg_positive),
+        }))
         .sort((a, b) => a.avg_positive - b.avg_positive)
         .reverse()
         .map(d => ({

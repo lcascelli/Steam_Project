@@ -63,6 +63,12 @@ FRONTEND
 
 
 RENDER URL: https://steam-project-3ph9.onrender.com
+
+
+FIXES: Changing the format of the avg_by_genre.json file broke the other charts. Should be an easy fix, since its 
+a cleaner format. 
+Prediction model is working...KINDA... it is able to handle check marks but does not make a prediction yet. 
+    Check Render to see if the error is there or on my frontend.
                         
 
                                 

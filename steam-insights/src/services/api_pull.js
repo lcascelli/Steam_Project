@@ -1,5 +1,5 @@
 export async function getPrediction(inputData) {
-    const response = await fetch("https://steam-project-3ph9.onrender.com", {
+    const response = await fetch("https://steam-project-3ph9.onrender.com/predict", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

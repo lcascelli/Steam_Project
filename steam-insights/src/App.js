@@ -3,6 +3,7 @@ import GenreChart from './components/GenreCountChart';
 import AvgReviewChart from './components/avgReviewChart';
 import PeakUserChart from './components/PeakUserChart'; 
 import TopGamesChart from './components/TopGamesChart';
+import PredictionForm from './components/PredictionForm';
 import './Formats.css'; 
 
 function App() {
@@ -26,6 +27,11 @@ function App() {
       <div className="chart-row">
         <div className="chart">
           <TopGamesChart />
+        </div>
+      </div>
+      <div className="chart-row">
+        <div className="chart">
+          <PredictionForm />
         </div>
       </div>
     </div>
