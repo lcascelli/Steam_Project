@@ -6,6 +6,11 @@ import numpy as np
 
 router = APIRouter()
 
+@router.post("/predict")
+async def predict(data:dict):
+    return {"received": data}
+
+
 model_path = os.path.join(os.path.dirname(__file__), '..', 'model', 'rf_model.joblib')
 
 model = joblib.load(model_path)
