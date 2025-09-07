@@ -66,9 +66,25 @@ RENDER URL: https://steam-project-3ph9.onrender.com
 
 
 FIXES: Changing the format of the avg_by_genre.json file broke the other charts. Should be an easy fix, since its 
-a cleaner format. 
+a cleaner format.  **FIXED**
 Prediction model is working...KINDA... it is able to handle check marks but does not make a prediction yet. 
     Check Render to see if the error is there or on my frontend.
+        GETTING THIS ERROR:
+        (index):1 Access to fetch at 'https://steam-project-3ph9.onrender.com/predict' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+api_pull.js:2  POST https://steam-project-3ph9.onrender.com/predict net::ERR_FAILED
+getPrediction @ api_pull.js:2
+handlePredict @ PredictionForm.js:62
+executeDispatch @ react-dom-client.development.js:16368
+runWithFiberInDEV @ react-dom-client.development.js:1518
+processDispatchQueue @ react-dom-client.development.js:16417
+(anonymous) @ react-dom-client.development.js:17016
+batchedUpdates$1 @ react-dom-client.development.js:3262
+dispatchEventForPluginEventSystem @ react-dom-client.development.js:16572
+dispatchEvent @ react-dom-client.development.js:20657
+dispatchDiscreteEvent @ react-dom-client.development.js:20625Understand this error
+PredictionForm.js:66 Error fetching prediction: TypeError: Failed to fetch
+    at getPrediction (api_pull.js:2:1)
+    at handlePredict (PredictionForm.js:62:1)
                         
 
                                 

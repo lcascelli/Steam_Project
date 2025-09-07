@@ -46,7 +46,7 @@ function PredictionForm() {
         };
 
         setInputData(newInputData);
-    }, [selectedGenre]);
+    }, [selectedGenre, genres]);
 
     const handleGenreChange = (e) => {
         const { value, checked } = e.target;
