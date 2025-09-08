@@ -7,9 +7,7 @@ function PredictionForm() {
     const [inputData, setInputData] = useState({});
     const [Result, setResult] = useState(null);
 
-        //extracting genre names
-    const genreLookup = avg_by_genre;
-    const genres = Object.keys(genreLookup);
+    const genres = React.useMemo(() => Object.keys(avg_by_genre), []);
 
 
     useEffect(() => {
@@ -45,8 +43,10 @@ function PredictionForm() {
             same_dev_pub: 1,
         };
 
-        setInputData(newInputData);
-    }, [selectedGenre, genres]);
+        if (JSON.stringify(newInputData) !== JSON.stringify(inputData)) {
+            setInputData(newInputData);
+        }
+    }, [selectedGenre, genres, inputData]);
 
     const handleGenreChange = (e) => {
         const { value, checked } = e.target;
