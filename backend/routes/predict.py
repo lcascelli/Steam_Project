@@ -43,6 +43,15 @@ async def options_predict():
         }
     )
 
+bin_map = {
+    1: '0-100,000',
+    2: '100,001-500,000',
+    3: '500,001-1,000,000',
+    4: '1,000,001-5,000,000',
+    5: '5,000,001-10,000,000',
+    6: '10,000,001+'
+    }
+
 @router.post("/predict")
 def predict(input_data: PredictionInput):
     features = np.array([[
