@@ -70,7 +70,12 @@ def predict(input_data: PredictionInput):
     prediction = model.predict(features)[0]
     predicted_proba = model.predict_proba(features)[0]
 
+    probabilities = {
+        bin_map[int(cls)]: float(prob)
+                for cls, prob in zip(model.classes_, predicted_proba)
+    }
+
     return {
-        "Predicted Ownership Classification": prediction.tolist(),
-        "Predicted Probabilities Across Classes": {str(cls): float(prob) for cls, prob in zip(model.classes_, predicted_proba)}
+        "Predicted Ownership Range": bin_map[int(prediction)],
+        "Predicted Probabilities Across Classes": probabilities,   
     }
