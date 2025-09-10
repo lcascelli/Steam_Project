@@ -38,10 +38,27 @@ function PredictionForm() {
         };
 
         const newInputData = {
-            ...Object.fromEntries(genres.map(g => [g, selectedGenre.includes(g) ? 1 : 0])),
-            ...averages,
+            Action: selectedGenre.includes("action") ? 1 : 0,
+            Casual: selectedGenre.includes("casual") ? 1 : 0,
+            Adventure: selectedGenre.includes("adventure") ? 1 : 0,
+            Simulation: selectedGenre.includes("simulation") ? 1 : 0,
+            Strategy: selectedGenre.includes("strat") ? 1 : 0,
+            RPG: selectedGenre.includes("rpg") ? 1 : 0,
+            Early_Access: selectedGenre.includes("early") ? 1 : 0,
+            Free_To_Play: selectedGenre.includes("free") ? 1 : 0,
+            Sports: selectedGenre.includes("sport") ? 1 : 0,
+            Racing: selectedGenre.includes("racing") ? 1 : 0,
+            Massively_Multiplayer: selectedGenre.includes("mmo") ? 1 : 0,
+            Violent: selectedGenre.includes("violent") ? 1 : 0,
+            Gore: selectedGenre.includes("gore") ? 1 : 0,
+            positive: averages.positive,
+            negative: averages.negative,
+            average_forever: averages.avg_forever,
+            median_forever: averages.median_forever,
+            ccu: averages.ccu,
             same_dev_pub: 1,
         };
+
 
         if (JSON.stringify(newInputData) !== JSON.stringify(inputData)) {
             setInputData(newInputData);

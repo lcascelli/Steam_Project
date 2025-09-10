@@ -80,7 +80,7 @@ def predict(input_data: PredictionInput):
     predicted_proba = model.predict_proba(features)[0]
 
     probabilities = {
-        bin_map[int(cls)]: float(prob)
+        bin_map[int(cls)]: f"{prob * 100:.1f}%"
                 for cls, prob in zip(model.classes_, predicted_proba)
     }
 
