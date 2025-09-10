@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import joblib
 import os
 import numpy as np
+from fastapi import JSONResponse
 
 router = APIRouter()
 
@@ -30,6 +31,17 @@ class PredictionInput(BaseModel):
     median_forever: float
     ccu: int
     same_dev_pub: int
+
+@router.options("/predict")
+async def options_predict():
+    return JSONResponse(
+        content = {"message": "CORS preflight"},
+        headers = {
+            "Access-Control-Allow-Origin": "http://localhost:3000",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+        }
+    )
 
 @router.post("/predict")
 def predict(input_data: PredictionInput):
