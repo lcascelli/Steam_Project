@@ -14,6 +14,7 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Steam Insights ML API"}
+    return {"prediction": int(prediction)}
 
 app.include_router(predict.router)
 
