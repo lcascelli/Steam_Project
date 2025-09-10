@@ -43,6 +43,15 @@ async def options_predict():
         }
     )
 
+bin_map = {
+    1: '0-100,000',
+    2: '100,001-500,000',
+    3: '500,001-1,000,000',
+    4: '1,000,001-5,000,000',
+    5: '5,000,001-10,000,000',
+    6: '10,000,001+'
+    }
+
 @router.post("/predict")
 def predict(input_data: PredictionInput):
     features = np.array([[
@@ -70,7 +79,12 @@ def predict(input_data: PredictionInput):
     prediction = model.predict(features)[0]
     predicted_proba = model.predict_proba(features)[0]
 
+    probabilities = {
+        bin_map[int(cls)]: float(prob)
+                for cls, prob in zip(model.classes_, predicted_proba)
+    }
+
     return {
-        "Predicted Ownership Classification": prediction.tolist(),
-        "Predicted Probabilities Across Classes": {str(cls): float(prob) for cls, prob in zip(model.classes_, predicted_proba)}
+        "Predicted Ownership Range": bin_map[int(prediction)],
+        "Predicted Probabilities Across Classes": probabilities,   
     }
