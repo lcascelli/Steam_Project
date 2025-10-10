@@ -2,13 +2,44 @@ import React, {useEffect, useState} from "react";
 import { getPrediction } from "../services/api_pull";
 import avg_by_genre from "../data/avg_by_genre.json";
 
+
+const displayNames = {
+    //Action: "Action",
+    //Casual: "Casual",
+    //Adventure: "Adventure",
+    //Simulation: "Simulation",
+    //Strategy: "Strategy",
+    //RPG: "RPG",
+    //Early_Access: "Early Access",
+    //Free_To_Play: "Free to Play",
+    //Sports: "Sports",
+    //Racing: "Racing",
+    //Massively_Multiplayer: "Massive Multiplayer",
+    //Violent: "Violent",
+    //Gore: "Gore",
+    positive: "Positive Reviews",
+    negative: "Negative Reviews",
+    average_forever: "Average Number of Users",
+    median_forever: "Median Number of Users",
+    ccu: "Concurrent Users (Snapshot)",
+    same_dev_pub: "Same Developer and Publisher",
+};
+
+const featureKeys = [
+    "positive",
+    "negative",
+    "average_forever",
+    "median_forever",
+    "ccu",
+    "same_dev_pub",
+];
+
 function PredictionForm() {
     const [selectedGenre, setSelectedGenre] = useState([]);
     const [inputData, setInputData] = useState({});
     const [Result, setResult] = useState(null);
-
+    const [loading, setLoading] = useState(false);
     const genres = React.useMemo(() => Object.keys(avg_by_genre), []);
-
 
     useEffect(() => {
         if (selectedGenre.length === 0) return;
@@ -60,6 +91,7 @@ function PredictionForm() {
         };
 
 
+
         if (JSON.stringify(newInputData) !== JSON.stringify(inputData)) {
             setInputData(newInputData);
         }
@@ -73,6 +105,16 @@ function PredictionForm() {
         );
     };
 
+    const handleInputChange = (e, key) => {
+        let value = e.target.value;
+        if (key !== "same_dev_pub") {
+            value = Number(value);
+        } else {
+            value = value === "1" ? 1 : 0;
+        }    
+        setInputData(prev => ({ ...prev, [key]: value }));
+    };
+
     const handlePredict = async () => {
         console.log("Sending inputData:", inputData);
         try {
@@ -82,7 +124,8 @@ function PredictionForm() {
         } catch (error) {
             console.error("Error fetching prediction:", error);
         }
-    };
+
+    }
 
     return (
         <div>
@@ -101,21 +144,64 @@ function PredictionForm() {
                     </label>
                 ))}
             </div>
+            <form style={{marginTop: "20px", display: "flex", flexWrap: "wrap", gap: "10px"}}>
+                {featureKeys.map((key) => (
+                    <div key={key} style={{marginRight: "20px"}}>
+                        <label>
+                            {displayNames[key] || key}:
+                            {key === "same_dev_pub" ? (
+                                <select
+                                    value={inputData[key] ?? 1}
+                                    onChange={(e) => handleInputChange(e, key)}
+                                    style={{marginLeft: "10px"}}
+                                >
+                                    <option value={1}>Yes</option>
+                                    <option value={0}>No</option>
+                                </select>
+                            ) : (
+                                <input
+                                    type="number"
+                                    value={inputData[key] ?? ""}
+                                    onChange={(e) => handleInputChange(e, key)}
+                                    style={{marginLeft: "10px", width: "100px"}}
+                                />
+                            )}
+                        </label>
+                    </div>
+                ))}
+            </form>
             <button onClick={handlePredict} style={{marginTop: "10px"}}>
                 Get Predict
             </button>
-
-            <pre style={{background: "#f4f4f4", padding: "10px"}}>
-                {JSON.stringify(inputData, null, 2)}
-            </pre>
-            {Result && (
-                <div>
-                    <h3>Prediction Result:</h3>
-                    <pre> {JSON.stringify(Result, null, 2)}</pre>
+            <h3 style={{marginTop: "50px"}}>Input Values</h3>
+            <div style={{marginTop: "10px", display: "flex", gap: "40px", alignItems: "flex-start"}}>
+                
+                <table style={{borderCollapse: "collapse", minWidth: "500px"}}>
+                    <thead>
+                            <tr>
+                                <th style={{border: "1px solid #ddd", padding:"8px"}}>Feature</th>
+                                <th style={{border: "1px solid #ddd", padding:"8px"}}>Value</th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        {featureKeys.map(key => (
+                            <tr key={key}>
+                                <td style={{border: "1px solid #ddd", padding:"8px"}}>{displayNames[key]}</td>
+                                <td style={{border: "1px solid #ddd", padding:"8px"}}>{inputData[key]}</td>
+                            </tr>
+                            ))}
+                    </tbody>
+                </table>
+                {Result && (
+                <div style = {{padding: "16px", borderRadius: "8px", minWidth: "300px"}}>
+                    <h3 style={{marginTop: "-70px"}}>Prediction Result:</h3>
+                    <pre style={{whiteSpace: "pre-wrap"}}> {JSON.stringify(Result, null, 2)}</pre>
                 </div>
             )}
+            </div>
         </div>
     );
 }
 
 export default PredictionForm;
+

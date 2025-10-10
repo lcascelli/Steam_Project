@@ -12,6 +12,11 @@ function App() {
       {/*top row*/}
       <div className="chart-row">
         <div className="chart">
+          <TopGamesChart />
+        </div>
+      </div>
+      <div className="chart-row">
+        <div className="chart">
           <GenreChart />
         </div>
       </div>
@@ -24,11 +29,7 @@ function App() {
           <PeakUserChart />
         </div>
       </div>
-      <div className="chart-row">
-        <div className="chart">
-          <TopGamesChart />
-        </div>
-      </div>
+      
       <div className="chart-row">
         <div className="chart">
           <PredictionForm />
