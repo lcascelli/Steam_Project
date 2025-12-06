@@ -17,6 +17,7 @@ const sortedData = Object.entries(genreData)
                 genreLabel: genreLabels[d.genre] || d.genre
                   }));
 
+
 const PeakUserChart = () => {
     return (
         <div style={{ width: '80%', height: 600 }}>

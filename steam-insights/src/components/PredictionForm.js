@@ -195,7 +195,23 @@ function PredictionForm() {
                 {Result && (
                 <div style = {{padding: "16px", borderRadius: "8px", minWidth: "300px"}}>
                     <h3 style={{marginTop: "-70px"}}>Prediction Result:</h3>
-                    <pre style={{whiteSpace: "pre-wrap"}}> {JSON.stringify(Result, null, 2)}</pre>
+                    <div style={{fontSize: "1.1em", fontWeight:"bold", marginBottom:"10px"}}>
+                        Predicted Ownership Range: 
+                    </div>
+                    <div style={{fontSize:"1em", padding: "8px"}}>
+                        {Result["Predicted Ownership Range"]}
+                    </div>
+                    <div style={{fontSize: "1.1em", fontWeight:"bold"}}>
+                        Predicted Probabilities Across Classes:
+                    </div>
+                    <div style={{fontFamily:"monospace", fontSize:"1em", padding: "8px"}}>
+                        {Result["Predicted Probabilities Across Classes"] &&
+                            Object.entries(Result["Predicted Probabilities Across Classes"]).map(([range, prob]) => (
+                                <div key={range}>
+                                    {range}: {prob}
+                                </div>
+                            ))}
+                    </div>
                 </div>
             )}
             </div>

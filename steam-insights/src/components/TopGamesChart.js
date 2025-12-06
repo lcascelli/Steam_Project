@@ -1,19 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useMemo, useState } from 'react';
 import genreData from '../data/df_indie_simple.json';
+import { genreLabels } from '../components/genreLabels.js';
 
 
 function TopGamesChart() {
     const [SelectedGenres, setSelectedGenres] = useState([]);
-    const [filteredGames, setFilteredGames] = useState([]);
 
-    const genres = Array.from(
+    const preprocessedGames = useMemo(() => {
+        return genreData.map(game => ({
+            ...game,
+            genres_list: game.genres_list || []
+        }));
+    }, []);
+
+    const genres = Object.values(genreLabels);
+    
+    /* This is the old version with all genres in list. Line above is curated genre list
+    Array.from(
         new Set(genreData.flatMap(game => game.genres_list || []))
     ).sort();
 
+    */ 
+
+    const filteredGames = useMemo(() => {
+        let filtered = preprocessedGames;
+
+        if (SelectedGenres.length > 0) {
+            filtered = filtered.filter(game =>
+                SelectedGenres.every(genre => game.genres_list.includes(genre))
+            );
+        }
+        return filtered
+            .sort((a, b) => b.owners_lower - a.owners_lower)
+            .slice(0, 10);
+    }, [SelectedGenres, preprocessedGames]);
+
 console.log(genreData.flatMap(game => game.genres_list));
 
-/* This still needs to be fixed. Right now it is a small scrollable box, but I want to be able to have a multi-select feature*/
+/* 
+
+This still needs to be fixed. Right now it is a small scrollable box, but I want to be able to have a multi-select feature
+
     useEffect(() => {
         let filtered = genreData;
         if (SelectedGenres.length > 0) {
@@ -29,6 +56,8 @@ console.log(genreData.flatMap(game => game.genres_list));
         setFilteredGames(topGames);
     }, [SelectedGenres]);
 
+    */
+
 const handleGenreChange = (e) => {
     const { value, checked } = e.target;
     setSelectedGenres(prev =>
@@ -40,7 +69,13 @@ const handleGenreChange = (e) => {
         <div>
             <h2>Top 10 Games By Ownership</h2>
             {/*filter logic*/}
-            <div style= {{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <div style= {{ 
+                display: "flex", 
+                flexWrap: "wrap", 
+                gap: "10px",
+                marginBottom: "15px" 
+                }}
+            >
                 {genres && genres.length > 0 ? (
                 genres.map((genre) => (
                     <label key={genre} style={{marginRight: "10px"}}>
