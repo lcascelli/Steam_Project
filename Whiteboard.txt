@@ -49,8 +49,12 @@ BACKEND
                                         NEEDS select top 5 rows of relevant columns, ordered by owners descending
         INGESTION: API pulls
             LOOKING for two things: new games, updates to previous games, and average ccu overtime during peak hours
-                HOW: each pull will need to happen during peak hours for gaming aka. weekends, throughout the day 
-                     to get information for peak times across the world (ASSUMPTION weekends are busiest across globe for gaming)
+            new games -- comes from storefront (this is where we get the appid and descriptive columns)
+            new game genres -- comes from storefront based on appids from steamspy. Provides a list of genres
+                HOW: creating a cron scheduler for a job both within google cloud run.
+                    1. Parallel processing for api pulls 
+                        a. steamspy will look for new games
+                        b. storefront will update game information
                 PULL info: we also need to record when pulls happened for each game, i.e. time of day and date
                            used for future charts (approximately when did x game hit top charts)
 
@@ -85,6 +89,9 @@ dispatchDiscreteEvent @ react-dom-client.development.js:20625Understand this err
 PredictionForm.js:66 Error fetching prediction: TypeError: Failed to fetch
     at getPrediction (api_pull.js:2:1)
     at handlePredict (PredictionForm.js:62:1)
+
+    **Fixed**
+ML model runs smoothly in the developer page.
                         
 
                                 
