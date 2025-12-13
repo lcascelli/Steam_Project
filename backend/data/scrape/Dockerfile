@@ -5,5 +5,5 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 COPY scrape_requirements.txt .
 RUN pip install --no-cache-dir -r scrape_requirements.txt
-COPY . .
-CMD ["python", "scrape.py"]
+COPY jobs/ ./jobs/
+CMD ["python", "initialSteamSpy.py"]

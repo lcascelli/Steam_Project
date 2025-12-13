@@ -2,6 +2,7 @@ import requests
 from google.cloud import bigquery
 from datetime import datetime
 from time import sleep
+import os
 
 #--------
 # INITIALIZING BQ AND TABLES
@@ -20,13 +21,13 @@ temp_table_id = f"{project_id}.{dataset_id}.temp_table"
 #--------
 # MODE SELECTION (backfill = updating previously pulled data, staging = updating new data from staging table)
 #--------
-mode = 'backfill' #or 'staging'
-
+MODE = os.getenv("MODE",'staging')
+ 
 
 def main():
-    if mode == 'backfill':
+    if MODE == 'backfill':
         appids = fetch_appids_from_bq()
-    elif mode == 'staging':
+    elif MODE == 'staging':
         appids = fetch_appids_from_staging()
 
         if not appids:
@@ -56,7 +57,7 @@ def main():
 
     load_rows_to_temp(rows)
     merge_into_main()
-    if mode == 'staging':
+    if MODE == 'staging':
         delete_staging_rows(staging_table_id)
     
     print("Processing complete.")
@@ -157,13 +158,13 @@ def merge_into_main():
     print("Merged data into main table.")
 
 def upsert_game_details(row: dict):
-    if mode == 'staging':
+    if MODE == 'staging':
         errors = bq.insert_rows_json(table_id, [row])
         if errors:
             print(f"inserting row: {row['appid']}")
         else:
             print(f"inserted row: {row['appid']}")
-    elif mode == 'backfill':
+    elif MODE == 'backfill':
         client = bigquery.Client(project=project_id)
         job_config = bigquery.LoadJobConfig(write_disposition='WRITE_APPEND')
         job = client.load_table_from_json([row], temp_table_id, job_config=job_config)
