@@ -7,7 +7,7 @@ project_id = 'steaminsights-466700'
 dataset_id = 'steam_data'
 #Pulling into clean games which includes all of the games pulled from steamspy.
 main_table = 'clean_games'
-staging_table = 'new_appids_staging'
+temp_table = 'new_appids_staging'
 
 
 #TOTAL TIME FOR THIS SCRIPT IS 2667m 30.3s
@@ -140,7 +140,7 @@ def write_new_appids(df, existing_appids, bq):
     if new_df.empty:
         print("No new appids to process.")
         return
-    staging_table = f"{project_id}.{dataset_id}.{staging_table}"
+    staging_table = f"{project_id}.{dataset_id}.{temp_table}"
 
     bq.load_table_from_dataframe(
         new_df,
