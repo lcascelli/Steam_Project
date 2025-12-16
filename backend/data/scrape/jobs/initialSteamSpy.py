@@ -1,7 +1,7 @@
 import requests
 import time
 import pandas as pd
-import google.cloud as bigquery
+from google.cloud import bigquery
 
 project_id = 'steaminsights-466700'
 dataset_id = 'steam_data'
