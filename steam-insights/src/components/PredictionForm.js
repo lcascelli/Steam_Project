@@ -38,7 +38,7 @@ function PredictionForm() {
     const [selectedGenre, setSelectedGenre] = useState([]);
     const [inputData, setInputData] = useState({});
     const [Result, setResult] = useState(null);
-    const [loading, setLoading] = useState(false);
+    //const [loading, setLoading] = useState(false);
     const genres = React.useMemo(() => Object.keys(avg_by_genre), []);
 
     useEffect(() => {

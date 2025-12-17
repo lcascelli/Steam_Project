@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { /*useEffect,*/ useMemo, useState } from 'react';
 import genreData from '../data/df_indie_simple.json';
 import { genreLabels } from '../components/genreLabels.js';
 
