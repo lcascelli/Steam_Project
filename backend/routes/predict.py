@@ -32,17 +32,6 @@ class PredictionInput(BaseModel):
     ccu: int
     same_dev_pub: int
 
-@router.options("/predict")
-async def options_predict():
-    return JSONResponse(
-        content = {"message": "CORS preflight"},
-        headers = {
-            "Access-Control-Allow-Origin": ["https://steam-indie-game-insights.netlify.app",
-                                            "http://localhost:8000"],
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        }
-    )
 
 bin_map = {
     1: '0-100,000',
