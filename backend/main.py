@@ -19,5 +19,3 @@ app.include_router(predict.router)
 async def root():
     return {"message": "Welcome to the Steam Insights ML API"}
 
-
-

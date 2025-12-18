@@ -3,7 +3,6 @@ from pydantic import BaseModel
 import joblib
 import os
 import numpy as np
-from fastapi import JSONResponse
 
 router = APIRouter()
 
