@@ -82,7 +82,7 @@ const handleGenreChange = (e) => {
                         <input
                             type="checkbox"
                             value={value}
-                            checked={SelectedGenres.includes(genre)}
+                            checked={SelectedGenres.includes(value)}
                             onChange={handleGenreChange}
                         />
                         {label}
