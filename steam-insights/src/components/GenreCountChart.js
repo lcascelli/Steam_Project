@@ -14,7 +14,7 @@ const sortedData = Object.entries(genreData)
         .reverse()
         .map(d => ({
                 ...d,
-                genreLabel: genreLabels[d.genre] || d.genre
+                genreLabel: genreLabels[d.genre]?.label || d.genre
                   }));
 
 const GenreChart = () => {
