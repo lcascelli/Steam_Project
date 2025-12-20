@@ -77,15 +77,15 @@ const handleGenreChange = (e) => {
                 }}
             >
                 {genres && genres.length > 0 ? (
-                genres.map((genre) => (
-                    <label key={genre} style={{marginRight: "10px"}}>
+                genres.map(({ label, value}) => (
+                    <label key={value} style={{marginRight: "10px"}}>
                         <input
                             type="checkbox"
-                            value={genre}
+                            value={value}
                             checked={SelectedGenres.includes(genre)}
                             onChange={handleGenreChange}
                         />
-                        {genre}
+                        {label}
                     </label>
                 ))
             ) : (
