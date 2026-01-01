@@ -21,7 +21,7 @@ def main():
     print("Starting SteamSpy data pull")
     bq= bigquery.Client()
     #Pull data from SteamSpy API
-    raw_df = steamspy_pull
+    raw_df = steamspy_pull()
     #Normalize and clean data
     clean_df = normalize_steamspy(raw_df)
     #Load existing appids from BigQuery
