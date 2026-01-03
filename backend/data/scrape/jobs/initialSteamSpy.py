@@ -3,6 +3,20 @@ import time
 import pandas as pd
 from google.cloud import bigquery
 
+
+"""
+UPDATES DOCKER IMAGE:
+docker build -t steamspy-job .
+docker tag steamspy-job:latest us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
+docker push us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
+
+UPDATES THE CLOUD RUN JOB:
+gcloud run jobs update steamspy-job `
+  --image us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest `
+  --region us-central1
+
+"""
+
 project_id = 'steaminsights-466700'
 dataset_id = 'steam_data'
 #Pulling into clean games which includes all of the games pulled from steamspy.
@@ -38,17 +52,39 @@ def steamspy_pull():
     headers = {
         'User-Agent': 'Mozilla/5.0'}
     while True:
-        response = requests.get(f"https://steamspy.com/api.php?request=all&page={page}", headers=headers)
-        data = response.json()
-        if not data:
+        if page >0:
+            print("Sleeping for 65 seconds to avoid rate limiting...", flush=True)
+            time.sleep(65)
+        print(f"Fetching page {page} from SteamSpy API...", flush=True)
+        response = requests.get(f"https://steamspy.com/api.php?request=all&page={page}", headers=headers, timeout=60)
+
+        if response.status_code != 200:
+            print(f"Error fetching data from SteamSpy API: {response.status_code} on page {page}", flush=True)
             break
-        all_data.append(pd.DataFrame.from_dict(data, orient='index'))
+
+        if not response.text.strip():
+            print(f"No data returned from SteamSpy API on page {page}", flush=True)
+            break
+
+        try:
+            data = response.json()
+
+        except ValueError as e:
+            print(f"Error parsing JSON from SteamSpy API on page {page}: {e}", flush=True)
+            break
+
+        if not data:
+            print("No data returned, stopping", flush=True)
+            break
         df = pd.DataFrame.from_dict(data, orient='index')
         print(f"Page {page} returned {len(df)} games")
-        if len(df) <800:
+
+        all_data.append(df)
+
+        if len(df) <900:
+            print("Last page reached, stopping", flush=True)
             break
         page += 1
-        time.sleep(60)
 
     steamspy_df = pd.concat(all_data, ignore_index=True)
     steamspy_df = steamspy_df.drop_duplicates(subset=['appid'])
@@ -71,8 +107,23 @@ def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
     #SPLITTING OWNERS INTO LOWER AND UPPER BOUNDS. SHOWS UP AS A RANGE I.E. "10000...20000" 
-    df["owners_lower"] = df["owners"].str.split("...").str[0].astype(float)
-    df["owners_upper"] = df["owners"].str.split("...").str[1].astype(float)
+    df["owners"] = (
+        df["owners"]
+        .astype(str)
+        .str.strip()
+        .replace({"":None, "nan":None})
+    )
+    owners_split = df["owners"].str.split("...", expand=True)  # Split the range into two parts
+    df["owners_lower"] = (owners_split[0]
+                          .str.replace(",","",regex=False)
+                          .astype(float, errors="coerce"))  # Convert lower bound to float
+    df["owners_upper"] = (owners_split[1]
+                          .str.replace(",","",regex=False)
+                          .astype(float, errors="coerce"))
+
+    bad_rows_owners = df["owners_lower"].isna().sum()
+    if bad_rows_owners > 0:
+        print(f"Warning: {bad_rows_owners} rows have invalid owners format and were set to NaN.", flush=True)
 
     normalized = df[expected_columns + ["owners_lower", "owners_upper"]]
     return normalized
