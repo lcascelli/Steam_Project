@@ -13,7 +13,7 @@ docker push us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
 UPDATES THE CLOUD RUN JOB:
 gcloud run jobs update steamspy-job `
   --image us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest `
-  --region us-central1
+  --region us-west1
 
 """
 
@@ -116,10 +116,10 @@ def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
     owners_split = df["owners"].str.split("...", expand=True)  # Split the range into two parts
     df["owners_lower"] = (owners_split[0]
                           .str.replace(",","",regex=False)
-                          .astype(float, errors="coerce"))  # Convert lower bound to float
+                          .astype(float))  # Convert lower bound to float
     df["owners_upper"] = (owners_split[1]
                           .str.replace(",","",regex=False)
-                          .astype(float, errors="coerce"))
+                          .astype(float))
 
     bad_rows_owners = df["owners_lower"].isna().sum()
     if bad_rows_owners > 0:
