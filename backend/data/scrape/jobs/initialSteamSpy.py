@@ -6,6 +6,7 @@ from google.cloud import bigquery
 
 """
 UPDATES DOCKER IMAGE:
+cd .\backend\data\scrape\
 docker build -t steamspy-job .
 docker tag steamspy-job:latest us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
 docker push us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
@@ -20,7 +21,7 @@ gcloud run jobs update steamspy-job `
 project_id = 'steaminsights-466700'
 dataset_id = 'steam_data'
 #Pulling into clean games which includes all of the games pulled from steamspy.
-main_table = 'clean_games'
+main_table = 'raw_data'
 temp_table = 'new_appids_staging'
 
 
@@ -105,6 +106,10 @@ def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
                     "median_2weeks", "price", "initialprice"]
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
+    
+    string_cols = ["name", "developer", "publisher", "score_rank","owners","discount"]
+    for col in string_cols:
+        df[col] = df[col].astype(str).replace({"nan": None})
 
     #SPLITTING OWNERS INTO LOWER AND UPPER BOUNDS. SHOWS UP AS A RANGE I.E. "10000...20000" 
     df["owners"] = (
@@ -113,19 +118,12 @@ def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
         .str.strip()
         .replace({"":None, "nan":None})
     )
-    owners_split = df["owners"].str.split("...", expand=True)  # Split the range into two parts
+    owners_split = df["owners"].str.split(" ..", expand=True)  # Split the range into two parts
     df["owners_lower"] = (owners_split[0]
                           .str.replace(",","",regex=False)
-                          .astype(float))  # Convert lower bound to float
-    df["owners_upper"] = (owners_split[1]
-                          .str.replace(",","",regex=False)
-                          .astype(float))
+                          .astype(int))  # Convert lower bound to int
 
-    bad_rows_owners = df["owners_lower"].isna().sum()
-    if bad_rows_owners > 0:
-        print(f"Warning: {bad_rows_owners} rows have invalid owners format and were set to NaN.", flush=True)
-
-    normalized = df[expected_columns + ["owners_lower", "owners_upper"]]
+    normalized = df[expected_columns + ["owners_lower"]]
     return normalized
 
 """BIGQUERY UPSERT LOGIC"""
@@ -172,9 +170,15 @@ def upsert_to_bigquery(df, bq):
         T.initialprice = S.initialprice,
         T.discount = S.discount,
         T.owners_lower = S.owners_lower,
-        T.owners_upper = S.owners_upper
         WHEN NOT MATCHED THEN
-        INSERT ROW;
+        INSERT (
+        appid, name, developer, publisher, score_rank, positive, negative, userscore,
+        average_forever, average_2weeks, ccu, owners, median_forever, median_2weeks,
+        price, initialprice, discount, owners_lower)
+        VALUES (
+        S.appid, S.name, S.developer, S.publisher, S.score_rank, S.positive, S.negative, S.userscore,
+        S.average_forever, S.average_2weeks, S.ccu, S.owners, S.median_forever, S.median_2weeks,
+        S.price, S.initialprice, S.discount, S.owners_lower);
         """
     
     bq.query(merge_query).resul()
