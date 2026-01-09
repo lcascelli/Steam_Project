@@ -49,7 +49,7 @@ def main():
 
 def steamspy_pull():
     all_data = []
-    page = 0
+    page = 85
     headers = {
         'User-Agent': 'Mozilla/5.0'}
     while True:
@@ -169,7 +169,8 @@ def upsert_to_bigquery(df, bq):
         T.price = S.price,
         T.initialprice = S.initialprice,
         T.discount = S.discount,
-        T.owners_lower = S.owners_lower,
+        T.owners_lower = S.owners_lower
+        
         WHEN NOT MATCHED THEN
         INSERT (
         appid, name, developer, publisher, score_rank, positive, negative, userscore,
@@ -181,7 +182,7 @@ def upsert_to_bigquery(df, bq):
         S.price, S.initialprice, S.discount, S.owners_lower);
         """
     
-    bq.query(merge_query).resul()
+    bq.query(merge_query).result()
     print("Merge completed. Data in main table is up to date.")
 
     bq.delete_table(temp_table, not_found_ok=True)
