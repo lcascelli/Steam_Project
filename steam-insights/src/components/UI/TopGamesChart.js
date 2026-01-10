@@ -1,6 +1,6 @@
 import React, { /*useEffect,*/ useMemo, useState } from 'react';
 import genreData from '../../data/df_indie_simple.json';
-import { genreLabels } from '../components/UI/genreLabels.js';
+import { genreLabels } from '../UI/genreLabels.js';
 
 
 function TopGamesChart() {
