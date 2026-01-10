@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import genreData from '../data/avg_by_genre.json';
-import { genreLabels } from '../components/genreLabels';
+import genreData from '../../data/avg_by_genre.json';
+import { genreLabels } from '../components/UI/genreLabels';
 
 const sortedData = Object.entries(genreData)
         .map(([genre, data]) => ({

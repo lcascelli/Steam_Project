@@ -1,9 +1,9 @@
 import React from 'react';
-import GenreChart from './components/GenreCountChart';
-import AvgReviewChart from './components/avgReviewChart';
-import PeakUserChart from './components/PeakUserChart'; 
-import TopGamesChart from './components/TopGamesChart';
-import PredictionForm from './components/PredictionForm';
+import GenreChart from './components/UI/GenreCountChart';
+import AvgReviewChart from './components/UI/avgReviewChart';
+import PeakUserChart from './components/UI/PeakUserChart'; 
+import TopGamesChart from './components/UI/TopGamesChart';
+import PredictionForm from './components/UI/PredictionForm';
 import './Formats.css'; 
 
 function App() {

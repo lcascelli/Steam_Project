@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import { getPrediction } from "../services/api_pull";
-import avg_by_genre from "../data/avg_by_genre.json";
+import { getPrediction } from "../../services/api_pull";
+import avg_by_genre from "../../data/avg_by_genre.json";
 
 
 const displayNames = {
