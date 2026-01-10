@@ -166,8 +166,8 @@ def upsert_to_bigquery(df, bq):
         T.owners = S.owners,
         T.median_forever = S.median_forever,
         T.median_2weeks = S.median_2weeks,
-        T.price = CAST(S.price AS NUMERIC),
-        T.initialprice = CAST(S.initialprice AS NUMERIC),
+        T.price = S.price,
+        T.initialprice = S.initialprice,
         T.discount = S.discount,
         T.owners_lower = S.owners_lower
         WHEN NOT MATCHED THEN
