@@ -31,7 +31,7 @@ def main():
         appids = fetch_appids_from_staging()
 
         if not appids:
-            print("No new appids found in staging table. Exiting.")
+            print("No new appids found in staging table. Exiting.", flush=True)
             return
     else:
         raise ValueError("Invalid mode. Use 'backfill' or 'staging'.")
@@ -41,7 +41,7 @@ def main():
     for idx, appid in enumerate(appids, start=1):
         data = fetch_steamspy_data(appid)
         if not data or 'appid' not in data:
-            print(f"Skipping appid {appid} due to missing data.")
+            print(f"Skipping appid {appid} due to missing data.", flush=True)
             continue
 
         rows.append({
@@ -53,14 +53,14 @@ def main():
         sleep(1.1)  # Rate limiting to avoid hitting SteamSpy's rate limit
 
         if idx % 50 == 0:
-            print(f"Progress: {idx}/{len(appids)} appids processed.")
+            print(f"Progress: {idx}/{len(appids)} appids processed.", flush=True)
 
     load_rows_to_temp(rows)
     merge_into_main()
     if MODE == 'staging':
         delete_staging_rows(staging_table_id)
     
-    print("Processing complete.")
+    print("Processing complete.", flush=True)
 
 #--------
 # COLLECTING APPIDS FROM BQ
@@ -75,19 +75,19 @@ def fetch_appids_from_bq() -> list[int]:
     """
     results = bq.query(query).result()
     appids = [row['appid'] for row in results]
-    print(f"found {len(appids)} appids in the main table.")
+    print(f"found {len(appids)} appids in the main table.", flush=True)
     return appids
 
 def fetch_appids_from_staging() -> list[int]:
     #Fetches all of the appids from the staging table to be used in the main table.
     query = f"""
-    SELECT DISTINCT 'appid'
+    SELECT DISTINCT appid
     FROM `{staging_table_id}`
-    WHERE 'appid' IS NOT NULL
+    WHERE appid IS NOT NULL
     """
     results = bq.query(query).result()
     appids = [row['appid'] for row in results]
-    print(f"found {len(appids)} appids in the staging table.")
+    print(f"found {len(appids)} appids in the staging table.", flush=True)
     return appids
 
 #--------
@@ -101,7 +101,7 @@ def delete_staging_rows(table: str):
     WHERE TRUE
     """
     results = bq.query(query).result()
-    print(f"Deleted {results.total_rows} rows from staging table.")
+    print(f"Deleted {results.total_rows} rows from staging table.", flush=True)
 
 #--------
 # PROCESSING API PULLS
@@ -114,7 +114,7 @@ def fetch_steamspy_data(appid: int):
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        print(f"Error fetching data for appid {appid}: {e}")
+        print(f"Error fetching data for appid {appid}: {e}", flush=True)
         return None
     
 #--------
@@ -137,11 +137,11 @@ def normalize_tags(tag_dict: dict):
 
 def load_rows_to_temp(rows: list[dict]):
     if not rows:
-        print("No rows to load.")
+        print("No rows to load.", flush=True)
         return
     job = bq.load_table_from_json(rows, temp_table_id, job_config=bigquery.LoadJobConfig(write_disposition='WRITE_TRUNCATE'))
     job.result()
-    print(f"Loaded {len(rows)} rows into temp table.")
+    print(f"Loaded {len(rows)} rows into temp table.", flush=True)
 
 def merge_into_main():
     merge_sql = f"""
@@ -153,17 +153,20 @@ def merge_into_main():
             t.genres = s.genres,
             t.tags = s.tags,
             t.last_updated = s.last_updated
+    WHEN NOT MATCHED THEN
+        INSERT (appid, genres, tags, last_updated)
+        VALUES (s.appid, s.genres, s.tags, s.last_updated)
     """
     bq.query(merge_sql).result()
-    print("Merged data into main table.")
+    print("Merged data into main table.", flush=True)
 
 def upsert_game_details(row: dict):
     if MODE == 'staging':
         errors = bq.insert_rows_json(table_id, [row])
         if errors:
-            print(f"inserting row: {row['appid']}")
+            print(f"inserting row: {row['appid']}", flush=True)
         else:
-            print(f"inserted row: {row['appid']}")
+            print(f"inserted row: {row['appid']}", flush=True)
     elif MODE == 'backfill':
         client = bigquery.Client(project=project_id)
         job_config = bigquery.LoadJobConfig(write_disposition='WRITE_APPEND')

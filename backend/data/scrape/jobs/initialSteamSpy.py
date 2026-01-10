@@ -5,13 +5,13 @@ from google.cloud import bigquery
 
 
 """
-UPDATES DOCKER IMAGE:
+UPDATES DOCKER IMAGE and UPDATES THE CLOUD RUN JOB:
 cd .\backend\data\scrape\
 docker build -t steamspy-job .
 docker tag steamspy-job:latest us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
 docker push us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest
 
-UPDATES THE CLOUD RUN JOB:
+
 gcloud run jobs update steamspy-job `
   --image us-docker.pkg.dev/steaminsights-466700/steamspy/steamspy-job:latest `
   --region us-west1
@@ -33,7 +33,7 @@ temp_table = 'new_appids_staging'
 #iterating through the API to get all games
 
 def main():
-    print("Starting SteamSpy data pull")
+    print("Starting SteamSpy data pull", flush=True)
     bq= bigquery.Client()
     #Pull data from SteamSpy API
     raw_df = steamspy_pull()
@@ -49,7 +49,7 @@ def main():
 
 def steamspy_pull():
     all_data = []
-    page = 85
+    page = 0
     headers = {
         'User-Agent': 'Mozilla/5.0'}
     while True:
@@ -78,7 +78,7 @@ def steamspy_pull():
             print("No data returned, stopping", flush=True)
             break
         df = pd.DataFrame.from_dict(data, orient='index')
-        print(f"Page {page} returned {len(df)} games")
+        print(f"Page {page} returned {len(df)} games", flush=True)
 
         all_data.append(df)
 
@@ -89,7 +89,7 @@ def steamspy_pull():
 
     steamspy_df = pd.concat(all_data, ignore_index=True)
     steamspy_df = steamspy_df.drop_duplicates(subset=['appid'])
-    print("total games in SteamSpy:", len(steamspy_df))
+    print("total games in SteamSpy:", len(steamspy_df), flush=True)
     return steamspy_df
 
 def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
@@ -118,10 +118,10 @@ def normalize_steamspy(df: pd.DataFrame) -> pd.DataFrame:
         .str.strip()
         .replace({"":None, "nan":None})
     )
-    owners_split = df["owners"].str.split(" ..", expand=True)  # Split the range into two parts
+    owners_split = df["owners"].str.split(" .. ", expand=True)  # Split the range into two parts
     df["owners_lower"] = (owners_split[0]
                           .str.replace(",","",regex=False)
-                          .astype(int))  # Convert lower bound to int
+                          .astype("Int64"))  # Convert lower bound to int
 
     normalized = df[expected_columns + ["owners_lower"]]
     return normalized
@@ -146,7 +146,7 @@ def upsert_to_bigquery(df, bq):
     )
     load_job.result()
 
-    print("Loaded temp SteamSpy table.")
+    print("Loaded temp SteamSpy table.", flush=True)
 
     merge_query = f"""
     MERGE `{project_id}.{dataset_id}.{main_table}` T
@@ -166,11 +166,10 @@ def upsert_to_bigquery(df, bq):
         T.owners = S.owners,
         T.median_forever = S.median_forever,
         T.median_2weeks = S.median_2weeks,
-        T.price = S.price,
-        T.initialprice = S.initialprice,
+        T.price = CAST(S.price AS NUMERIC),
+        T.initialprice = CAST(S.initialprice AS NUMERIC),
         T.discount = S.discount,
         T.owners_lower = S.owners_lower
-        
         WHEN NOT MATCHED THEN
         INSERT (
         appid, name, developer, publisher, score_rank, positive, negative, userscore,
@@ -183,7 +182,7 @@ def upsert_to_bigquery(df, bq):
         """
     
     bq.query(merge_query).result()
-    print("Merge completed. Data in main table is up to date.")
+    print("Merge completed. Data in main table is up to date.", flush=True)
 
     bq.delete_table(temp_table, not_found_ok=True)
 
@@ -194,7 +193,7 @@ def write_new_appids(df, existing_appids, bq):
     new_df = df[~df["appid"].isin(existing_appids)][["appid"]]
 
     if new_df.empty:
-        print("No new appids to process.")
+        print("No new appids to process.", flush=True)
         return
     staging_table = f"{project_id}.{dataset_id}.{temp_table}"
 
@@ -204,7 +203,7 @@ def write_new_appids(df, existing_appids, bq):
         job_config=bigquery.LoadJobConfig(write_disposition="WRITE_APPEND")
     ).result()
 
-    print(f"Wrote {len(new_df)} new appids to staging table.")
+    print(f"Wrote {len(new_df)} new appids to staging table.", flush=True)
 
 
 if __name__ == "__main__":
