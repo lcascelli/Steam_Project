@@ -174,8 +174,7 @@ function PredictionForm() {
                 ))}
             </form>
             <button onClick={handlePredict} disable={loading} style={{marginTop: "10px"}}>
-                {loading ? "Waiting for backend, this may take up to a minute for the backend API to wake up..." : "Predict"}
-                Get Predict
+                {loading ? "Waiting for backend, this may take up to a minute for the backend API to wake up..." : "Get Predict"}
             </button>
             <h3 style={{marginTop: "50px"}}>Input Values</h3>
             <div style={{marginTop: "10px", display: "flex", gap: "40px", alignItems: "flex-start"}}>
