@@ -20,7 +20,12 @@ export default function ProjectSection({ project }) {
             {open && (
                 <div className="project-body"> 
                     <p className="project-description">
-                        {project.description}
+                        {project.description
+                        .trim()
+                        .split('\n\n')
+                        .map((para, inx) => (
+                            <p key={inx}>{para}</p>
+                        ))}
                     </p>
                     
                     <h4>Tech Stack</h4>
