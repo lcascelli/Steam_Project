@@ -46,11 +46,11 @@ export default function ProjectSection({ project }) {
 
                     <div className="project-links">
                         {project.repo && (
-                        <a href={project.repo} target="_blank">
+                        <a href={project.repo} target="_blank" rel="noopener noreferrer">
                         View Repository
                         </a>
                         )}
-                    </div>
+                    </div> 
                 </div>
             )}
         </div>
