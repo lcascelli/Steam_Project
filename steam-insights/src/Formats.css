@@ -43,13 +43,15 @@
 }
 
 .tech-stack {
+  list-style: none;
+  padding-left: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .tech-stack li {
-  background: #f3f3f3;
+  background: #7fa6eea8;
   padding: 0.3rem 0.6rem;
   border-radius: 4px;
   font-size: 0.85rem;

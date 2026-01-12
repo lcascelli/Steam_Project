@@ -38,7 +38,7 @@ function PredictionForm() {
     const [selectedGenre, setSelectedGenre] = useState([]);
     const [inputData, setInputData] = useState({});
     const [Result, setResult] = useState(null);
-    //const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const genres = React.useMemo(() => Object.keys(avg_by_genre), []);
 
     useEffect(() => {
@@ -117,12 +117,15 @@ function PredictionForm() {
 
     const handlePredict = async () => {
         console.log("Sending inputData:", inputData);
+        setLoading(true);
         try {
             const prediction = await getPrediction(inputData);
             console.log("Prediction Results:", prediction);
             setResult(prediction);
         } catch (error) {
             console.error("Error fetching prediction:", error);
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -170,7 +173,8 @@ function PredictionForm() {
                     </div>
                 ))}
             </form>
-            <button onClick={handlePredict} style={{marginTop: "10px"}}>
+            <button onClick={handlePredict} disable={loading} style={{marginTop: "10px"}}>
+                {loading ? "Waiting for backend, this may take up to a minute for the backend API to wake up..." : "Predict"}
                 Get Predict
             </button>
             <h3 style={{marginTop: "50px"}}>Input Values</h3>

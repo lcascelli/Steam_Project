@@ -8,7 +8,7 @@ function App() {
 
     return (
     <div className="portfolio">
-        <hi>Projects</hi>
+        <hi padding = "8px">Projects</hi>
 
       {projects.map(project => (
         <ProjectSection 
