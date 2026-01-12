@@ -20,3 +20,37 @@
         flex-direction: column;
     }
 }
+
+.project-section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.project-header {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.project-body {
+  padding: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tech-stack li {
+  background: #f3f3f3;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}

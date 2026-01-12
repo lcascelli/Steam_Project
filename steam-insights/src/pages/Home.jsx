@@ -2,7 +2,7 @@ import ProjectSection from "../components/ProjectSection";
 import { steamInsights } from "../projects/steamInsights";
 import { shinyApp } from "../projects/shinyApp";
 
-export default function Home() {
+function App() {
     const projects = [steamInsights, shinyApp];
 
     return (
@@ -11,8 +11,11 @@ export default function Home() {
 
       {projects.map(project => (
         <ProjectSection 
-        key={project.id} project={project} />
+        key={project.id} 
+        project={project} 
+        />
       ))}
     </div>
   );
 }
+export default App;
