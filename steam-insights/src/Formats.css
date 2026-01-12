@@ -56,3 +56,15 @@
   border-radius: 4px;
   font-size: 0.85rem;
 }
+.portfolio-header {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 2rem 0 1.5rem 0;
+}
+.portfolio-subheader {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  color: #555;
+}

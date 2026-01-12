@@ -8,7 +8,8 @@ function App() {
 
     return (
     <div className="portfolio">
-        <hi padding = "8px">Projects</hi>
+        <h1 className="portfolio-header">Projects List</h1>
+          <h2 className='portfolio-subheader'>Click on a project title to view</h2>
 
       {projects.map(project => (
         <ProjectSection 
